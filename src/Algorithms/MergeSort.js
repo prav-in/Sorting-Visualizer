@@ -36,13 +36,13 @@ while( i<a.length && j<b.length){
 
     if(a[i]<b[j]){ 
       nums.push(a[i++])
-      anim.push([c+s,a[i-1]])
+      anim.push([c+s,-1])
       c++
       continue;
     }
 
      nums.push(b[j++])
-     anim.push([c+s,b[j-1]])
+     anim.push([c+s,-1])
      c++
     }
 
@@ -50,22 +50,27 @@ if(i>=a.length){
 
     while(j<b.length){
     nums.push(b[j++])
-anim.push([c+s,c+s])
-anim.push([c+s,c+s])
-anim.push([c+s,b[j-1]])
-c++
+     c++
     }
      
+   for(let k=0;k<nums.length;k++){
+    anim.push([k+s,k+s])
+    anim.push([k+s,k+s])
+    anim.push([k+s,nums[k]])
+   }
+
     return nums; 
 }
 
 while(i<a.length){
 nums.push(a[i++])
-anim.push([c+s,c+s])
-anim.push([c+s,c+s])
-anim.push([c+s,a[i-1]])
-c++
 }
+
+for(let k=0;k<nums.length;k++){
+    anim.push([k+s,k+s])
+    anim.push([k+s,k+s])
+    anim.push([k+s,nums[k]])
+   }
 return nums;
 
 }
