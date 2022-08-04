@@ -4,10 +4,16 @@ import  {getBubbleSortAnimations} from '../Algorithms/BubbleSort';
 import { getInsertionSortAniamtions } from '../Algorithms/InsertionSort';
 import {getMergeSortAnimations} from '../Algorithms/MergeSort';
 import { getQuickSortAnimations } from '../Algorithms/QuickSort';
+import ButtonContainer from "../Components/ButtonContainer"
+import ArrayContainer from '../Components/ArrayContainer'
+import Slider from '../Components/Slider';
 
 let c1 = "#ccf381" //normal bar
 let c2 = "#d90429" //compared bar
-let c3 =  "#d2ccf5"
+let c3 =  "#d2ccf5" //afer sorting
+
+let funs = ["resetArray","mergeSort","quickSort", "bubbleSort", "insertionSort", "stopAnimation"]
+let propsObj = {}
 
 export default class SortingVisualiser extends Component {
 
@@ -17,9 +23,15 @@ export default class SortingVisualiser extends Component {
     this.state = {
         array : [],
         speed : 4,
-        arrayBars : 200
+        arrayBars : 240,
+        btnDisabled : false
     };
 
+    for(let i=0;i<funs.length;i++){
+    this[funs[i]] = this[funs[i]].bind(this)
+     propsObj[funs[i]]  = this[funs[i]]
+    }
+     
     }
 
   componentDidMount(){
@@ -38,7 +50,7 @@ export default class SortingVisualiser extends Component {
 
    for(let i=0;i<arrayBars.length;i++)
    arrayBars[i].style.backgroundColor = c1
-  
+
   }
 
 colorAll(l){
@@ -52,10 +64,16 @@ colorAll(l){
     },l*this.state.speed + i*4)
    }
 
+   setTimeout(()=>{
+    this.setState({btnDisabled : false})
+    },l*this.state.speed+arrayBars.length*4)
+
 }
 
-  bubbleSort(){
-    
+bubbleSort(){
+
+    this.setState({btnDisabled : true})
+
     const animations = getBubbleSortAnimations([...this.state.array]);
 
     for(let i=0;i<animations.length;i++){
@@ -93,7 +111,9 @@ colorAll(l){
         this.colorAll(animations.length)
 }
 
-  insertionSort(){
+insertionSort(){
+
+    this.setState({btnDisabled : true})
 
    let animations = getInsertionSortAniamtions([...this.state.array])
 
@@ -127,10 +147,12 @@ colorAll(l){
 
     }
     this.colorAll(animations.length)
+
 }
 
 mergeSort(){
 
+  this.setState({btnDisabled : true})
   const animations = getMergeSortAnimations([...this.state.array])
 
   for(let i=0;i<animations.length;i++){
@@ -167,6 +189,8 @@ mergeSort(){
 
 quickSort(){
 
+  this.setState({btnDisabled : true})
+
   const animations = getQuickSortAnimations([...this.state.array])
 
   for(let i=0;i<animations.length;i++){
@@ -200,7 +224,6 @@ quickSort(){
     }
 
     this.colorAll(animations.length)
-
 }
 
 handleSlideChange=(e)=>{
@@ -220,32 +243,27 @@ handleSlideChange=(e)=>{
  
 }
 
+stopAnimation(){
+
+  const highestId = window.setTimeout(() => {
+    for (let i = highestId; i >= 0; i--) {
+      window.clearInterval(i);
+    }
+  }, 0);
+
+  this.setState({btnDisabled : false})
+  this.resetArray(this.state.arrayBars)
+}
    
   render() {
 
-    const {array} = this.state;
-
     return (
-         <div className='array-container'>
-        
-        <div className="array-bars">
-        {array.map((val,ind)=>(
-           
-            <div className="array-bar" 
-            key={ind}
-            style={{height: `${val}px`}}>
-            </div>  
-        ))}
-       </div>
-        <div className="btn-container">
-         <button onClick={()=>this.resetArray(this.state.arrayBars)} className="btn">New Array</button>
-         <button onClick={()=>this.mergeSort()} className="btn">Merge Sort</button> 
-         <button onClick={()=>this.bubbleSort()} className="btn">Bubble Sort</button>
-         <button onClick={()=>this.insertionSort()} className="btn">Insertion Sort </button>
-         <button onClick={()=>this.quickSort()} className="btn">Quick Sort </button>
-         <input type="range" min="0" max="7" step="1" value={7-Math.round(Math.log2(this.state.speed))} onChange={this.handleSlideChange} className="slider" id="myRange"></input>
-        </div>
-        </div>
+         <div className='sorting-visualiser'>  
+        <ArrayContainer array={this.state.array}/> 
+        <ButtonContainer arrayBars={this.state.arrayBars} btnDisabled={this.state.btnDisabled} {...propsObj}/>
+        <Slider btnDisabled={this.state.btnDisabled} speed={this.state.speed}
+                handleSlideChange={this.handleSlideChange} />
+         </div>
     )
   }
 }
