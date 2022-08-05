@@ -76,6 +76,8 @@ bubbleSort(){
 
     const animations = getBubbleSortAnimations([...this.state.array]);
 
+console.log(animations)
+
     for(let i=0;i<animations.length;i++){
         
         const arrayBars = document.getElementsByClassName('array-bar');  
